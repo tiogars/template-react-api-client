@@ -1,0 +1,726 @@
+openapi: 3.0.3
+info:
+  title: Task management API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+security:
+  - bearerAuth: []
+tags:
+  - name: Tasks
+  - name: Tags
+  - name: Nomenclatures
+  - name: Users
+  - name: Roles
+  - name: Authentication
+  - name: User settings
+paths:
+  /api/v1/task:
+    get:
+      operationId: listTask
+      tags: [Tasks]
+      responses:
+        '200':
+          description: Tasks returned.
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/TaskRead' } }
+    post:
+      operationId: createTask
+      tags: [Tasks]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateTaskRequest' }
+      responses:
+        '201':
+          description: Task created.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TaskRead' }
+        '400': { description: Invalid data or references. }
+        '409': { description: Duplicate business code. }
+  /api/v1/task/{id}:
+    parameters:
+      - $ref: '#/components/parameters/id'
+    get:
+      operationId: readTask
+      tags: [Tasks]
+      responses:
+        '200':
+          description: Task returned.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TaskRead' }
+        '404': { description: Task not found. }
+    put:
+      operationId: updateTask
+      tags: [Tasks]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UpdateTaskRequest' }
+      responses:
+        '200':
+          description: Task updated.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TaskRead' }
+        '400': { description: Invalid data or references. }
+        '404': { description: Task not found. }
+    delete:
+      operationId: deleteTask
+      tags: [Tasks]
+      responses:
+        '204': { description: Task deleted. }
+        '404': { description: Task not found. }
+  /api/v1/task/delete-selected:
+    post:
+      operationId: deleteSelectedTask
+      tags: [Tasks]
+      requestBody:
+        $ref: '#/components/requestBodies/SelectedIds'
+      responses:
+        '200':
+          $ref: '#/components/responses/SelectedDeleted'
+  /api/v1/task/seed:
+    post:
+      operationId: seedTask
+      tags: [Tasks]
+      requestBody:
+        $ref: '#/components/requestBodies/TaskImport'
+      responses:
+        '201':
+          $ref: '#/components/responses/TasksImported'
+  /api/v1/task/import.json:
+    post:
+      operationId: importJsonTask
+      tags: [Tasks]
+      requestBody:
+        $ref: '#/components/requestBodies/TaskImport'
+      responses:
+        '201':
+          $ref: '#/components/responses/TasksImported'
+  /api/v1/task/import.csv:
+    post:
+      operationId: importCsvTask
+      tags: [Tasks]
+      description: >-
+        Accepts legacy CSV records. Extended CSV appends status, priority, dueDate,
+        assignedTo, tagIds, and nomenclatureId after the original six columns.
+        dueDate is YYYY-MM-DD and tagIds contains semicolon-separated numeric IDs.
+        Referenced tags and nomenclatures must exist in this database before importing.
+      requestBody:
+        required: true
+        content:
+          text/csv:
+            schema: { type: string }
+      responses:
+        '201':
+          $ref: '#/components/responses/TasksImported'
+  /api/v1/task/export.json:
+    get:
+      operationId: exportJsonTask
+      tags: [Tasks]
+      responses:
+        '200':
+          description: Tasks exported.
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/TaskRead' } }
+  /api/v1/task/export.csv:
+    get:
+      operationId: exportCsvTask
+      tags: [Tasks]
+      description: >-
+        Extended CSV appends status, priority, dueDate, assignedTo, tagIds, and
+        nomenclatureId after the original six columns. tagIds contains
+        semicolon-separated numeric IDs and dueDate is YYYY-MM-DD.
+      responses:
+        '200':
+          description: Tasks exported.
+          content:
+            text/csv:
+              schema: { type: string }
+  /api/v1/task/print.pdf:
+    get:
+      operationId: printAllTask
+      tags: [Tasks]
+      responses:
+        '200':
+          $ref: '#/components/responses/Pdf'
+        '422': { description: Unsupported PDF characters. }
+  /api/v1/task/{id}/print.pdf:
+    parameters:
+      - $ref: '#/components/parameters/id'
+    get:
+      operationId: printTask
+      tags: [Tasks]
+      responses:
+        '200':
+          $ref: '#/components/responses/Pdf'
+        '404': { description: Task not found. }
+        '422': { description: Unsupported PDF characters. }
+  /api/v1/task/print-selected.pdf:
+    post:
+      operationId: printSelectedTask
+      tags: [Tasks]
+      requestBody:
+        $ref: '#/components/requestBodies/SelectedIds'
+      responses:
+        '200':
+          $ref: '#/components/responses/Pdf'
+        '400': { description: Select between 1 and 1000 valid IDs. }
+        '404': { description: One or more tasks not found. }
+        '422': { description: Unsupported PDF characters. }
+  /api/v1/tag:
+    get:
+      operationId: listTag
+      tags: [Tags]
+      responses:
+        '200':
+          description: Tags returned.
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/TagRead' } }
+    post:
+      operationId: createTag
+      tags: [Tags]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateTagRequest' }
+      responses:
+        '201':
+          description: Tag created.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TagRead' }
+        '409': { description: Duplicate business code. }
+  /api/v1/tag/{id}:
+    parameters:
+      - $ref: '#/components/parameters/id'
+    get:
+      operationId: readTag
+      tags: [Tags]
+      responses:
+        '200':
+          description: Tag returned.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TagRead' }
+        '404': { description: Tag not found. }
+    put:
+      operationId: updateTag
+      tags: [Tags]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UpdateTagRequest' }
+      responses:
+        '200':
+          description: Tag updated.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TagRead' }
+    delete:
+      operationId: deleteTag
+      tags: [Tags]
+      responses:
+        '204': { description: Tag deleted. }
+        '409': { description: Tag is referenced by a task. }
+  /api/v1/nomenclature:
+    get:
+      operationId: listNomenclature
+      tags: [Nomenclatures]
+      responses:
+        '200':
+          description: Nomenclatures returned.
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/NomenclatureRead' } }
+    post:
+      operationId: createNomenclature
+      tags: [Nomenclatures]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateNomenclatureRequest' }
+      responses:
+        '201':
+          description: Nomenclature created.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/NomenclatureRead' }
+        '400': { description: Invalid parent reference or cycle. }
+        '409': { description: Duplicate business code. }
+  /api/v1/nomenclature/{id}:
+    parameters:
+      - $ref: '#/components/parameters/id'
+    get:
+      operationId: readNomenclature
+      tags: [Nomenclatures]
+      responses:
+        '200':
+          description: Nomenclature returned.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/NomenclatureRead' }
+    put:
+      operationId: updateNomenclature
+      tags: [Nomenclatures]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UpdateNomenclatureRequest' }
+      responses:
+        '200':
+          description: Nomenclature updated.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/NomenclatureRead' }
+        '400': { description: Invalid parent reference or cycle. }
+    delete:
+      operationId: deleteNomenclature
+      tags: [Nomenclatures]
+      responses:
+        '204': { description: Nomenclature deleted. }
+        '409': { description: Nomenclature is referenced by a task or child. }
+  /api/v1/auth/login:
+    post:
+      operationId: login
+      tags: [Authentication]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LoginRequest' }
+      responses:
+        '200':
+          description: Authenticated.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LoginResponse' }
+        '401': { description: Invalid credentials. }
+  /api/v1/auth/me:
+    get:
+      operationId: me
+      tags: [Authentication]
+      responses:
+        '200':
+          description: Current user.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+  /api/v1/auth/users:
+    get:
+      operationId: listUsers
+      tags: [Users]
+      responses:
+        '200':
+          description: Users returned.
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/User' } }
+    post:
+      operationId: createUser
+      tags: [Users]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateUserRequest' }
+      responses:
+        '201':
+          description: User created.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+  /api/v1/auth/users/{id}:
+    parameters:
+      - $ref: '#/components/parameters/id'
+    get:
+      operationId: readUser
+      tags: [Users]
+      responses:
+        '200':
+          description: User returned.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+    put:
+      operationId: updateUser
+      tags: [Users]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UpdateUserRequest' }
+      responses:
+        '200':
+          description: User updated.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+    delete:
+      operationId: deleteUser
+      tags: [Users]
+      responses:
+        '204': { description: User deleted. }
+  /api/v1/auth/users/delete-selected:
+    post:
+      operationId: deleteSelectedUsers
+      tags: [Users]
+      requestBody:
+        $ref: '#/components/requestBodies/SelectedIds'
+      responses:
+        '200':
+          $ref: '#/components/responses/SelectedDeleted'
+  /api/v1/auth/roles:
+    get:
+      operationId: listRoles
+      tags: [Roles]
+      responses:
+        '200':
+          description: Roles returned.
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: '#/components/schemas/Role' } }
+    post:
+      operationId: createRole
+      tags: [Roles]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateRoleRequest' }
+      responses:
+        '201':
+          description: Role created.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Role' }
+  /api/v1/auth/roles/{id}:
+    parameters:
+      - $ref: '#/components/parameters/id'
+    get:
+      operationId: readRole
+      tags: [Roles]
+      responses:
+        '200':
+          description: Role returned.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Role' }
+    put:
+      operationId: updateRole
+      tags: [Roles]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UpdateRoleRequest' }
+      responses:
+        '200':
+          description: Role updated.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Role' }
+    delete:
+      operationId: deleteRole
+      tags: [Roles]
+      responses:
+        '204': { description: Role deleted. }
+  /api/v1/auth/roles/delete-selected:
+    post:
+      operationId: deleteSelectedRoles
+      tags: [Roles]
+      requestBody:
+        $ref: '#/components/requestBodies/SelectedIds'
+      responses:
+        '200':
+          $ref: '#/components/responses/SelectedDeleted'
+  /api/v1/settings/user/me:
+    get:
+      operationId: readMyUserSettings
+      tags: [User settings]
+      responses:
+        '200':
+          $ref: '#/components/responses/Settings'
+    put:
+      operationId: updateMyUserSettings
+      tags: [User settings]
+      requestBody:
+        $ref: '#/components/requestBodies/Settings'
+      responses:
+        '200':
+          $ref: '#/components/responses/Settings'
+  /api/v1/settings/user/users/{userId}:
+    parameters:
+      - name: userId
+        in: path
+        required: true
+        schema: { type: integer, format: int64, minimum: 1 }
+    get:
+      operationId: readUserSettings
+      tags: [User settings]
+      responses:
+        '200':
+          $ref: '#/components/responses/Settings'
+    put:
+      operationId: updateUserSettings
+      tags: [User settings]
+      requestBody:
+        $ref: '#/components/requestBodies/Settings'
+      responses:
+        '200':
+          $ref: '#/components/responses/Settings'
+  /api/v1/settings/user/anonymous:
+    get:
+      operationId: readAnonymousUserSettings
+      tags: [User settings]
+      responses:
+        '200':
+          $ref: '#/components/responses/Settings'
+    put:
+      operationId: updateAnonymousUserSettings
+      tags: [User settings]
+      requestBody:
+        $ref: '#/components/requestBodies/Settings'
+      responses:
+        '200':
+          $ref: '#/components/responses/Settings'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    id:
+      name: id
+      in: path
+      required: true
+      schema: { type: integer, format: int64, minimum: 1 }
+  requestBodies:
+    SelectedIds:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/DeleteSelectedRequest' }
+    TaskImport:
+      required: true
+      content:
+        application/json:
+          schema: { type: array, items: { $ref: '#/components/schemas/CreateTaskRequest' } }
+    Settings:
+      required: true
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/UpdateUserSettingsRequest' }
+  responses:
+    SelectedDeleted:
+      description: Selected records processed.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/DeleteSelectedResponse' }
+    TasksImported:
+      description: Tasks imported.
+      content:
+        application/json:
+          schema: { type: array, items: { $ref: '#/components/schemas/TaskRead' } }
+    Pdf:
+      description: PDF document.
+      content:
+        application/pdf:
+          schema: { type: string, format: binary }
+    Settings:
+      description: User settings.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/UserSettings' }
+  schemas:
+    TaskStatus:
+      type: string
+      enum: [TODO, IN_PROGRESS, DONE, CANCELLED]
+      default: TODO
+    TaskPriority:
+      type: string
+      enum: [LOW, NORMAL, HIGH, URGENT]
+      default: NORMAL
+    TaskFields:
+      type: object
+      properties:
+        status: { $ref: '#/components/schemas/TaskStatus' }
+        priority: { $ref: '#/components/schemas/TaskPriority' }
+        dueDate: { type: string, format: date, nullable: true, default: null }
+        assignedTo:
+          {
+            type: string,
+            nullable: true,
+            default: null,
+            description: 'Free text assignee, not a user reference.',
+          }
+        tagIds:
+          type: array
+          uniqueItems: true
+          default: []
+          items: { type: integer, format: int64, minimum: 1 }
+        nomenclatureId: { type: integer, format: int64, minimum: 1, nullable: true, default: null }
+    BusinessFields:
+      type: object
+      required: [code, label]
+      properties:
+        code: { type: string, minLength: 1, description: Unique immutable business code. }
+        label: { type: string, minLength: 1 }
+        description: { type: string, nullable: true }
+    Audit:
+      type: object
+      required: [id, createdDate, lastModifiedDate, createdBy, lastModifiedBy]
+      properties:
+        id: { type: integer, format: int64, minimum: 1 }
+        createdDate: { type: string, format: date-time }
+        lastModifiedDate: { type: string, format: date-time }
+        createdBy: { type: string }
+        lastModifiedBy: { type: string }
+    CreateTaskRequest:
+      allOf:
+        - $ref: '#/components/schemas/BusinessFields'
+        - $ref: '#/components/schemas/TaskFields'
+    UpdateTaskRequest:
+      allOf:
+        - $ref: '#/components/schemas/UpdateTagRequest'
+        - $ref: '#/components/schemas/TaskFields'
+    TaskRead:
+      allOf:
+        - $ref: '#/components/schemas/BusinessFields'
+        - $ref: '#/components/schemas/TaskFields'
+        - $ref: '#/components/schemas/Audit'
+    CreateTagRequest:
+      allOf:
+        - $ref: '#/components/schemas/BusinessFields'
+    UpdateTagRequest:
+      type: object
+      required: [label]
+      properties:
+        label: { type: string, minLength: 1 }
+        description: { type: string, nullable: true }
+    TagRead:
+      allOf:
+        - $ref: '#/components/schemas/BusinessFields'
+        - $ref: '#/components/schemas/Audit'
+    NomenclatureParent:
+      type: object
+      properties:
+        parentId: { type: integer, format: int64, minimum: 1, nullable: true, default: null }
+    CreateNomenclatureRequest:
+      allOf:
+        - $ref: '#/components/schemas/CreateTagRequest'
+        - $ref: '#/components/schemas/NomenclatureParent'
+    UpdateNomenclatureRequest:
+      allOf:
+        - $ref: '#/components/schemas/UpdateTagRequest'
+        - $ref: '#/components/schemas/NomenclatureParent'
+    NomenclatureRead:
+      allOf:
+        - $ref: '#/components/schemas/TagRead'
+        - $ref: '#/components/schemas/NomenclatureParent'
+    DeleteSelectedRequest:
+      type: object
+      required: [ids]
+      properties:
+        ids:
+          type: array
+          minItems: 1
+          maxItems: 1000
+          items: { type: integer, format: int64, minimum: 1 }
+    DeleteSelectedResponse:
+      type: object
+      required: [deletedIds, skippedIds]
+      properties:
+        deletedIds: { type: array, items: { type: integer, format: int64 } }
+        skippedIds: { type: array, items: { type: integer, format: int64 } }
+    Role:
+      type: object
+      required: [id, code, label, createdDate, lastModifiedDate]
+      properties:
+        id: { type: integer, format: int64 }
+        code: { type: string }
+        label: { type: string }
+        createdDate: { type: string, format: date-time }
+        lastModifiedDate: { type: string, format: date-time }
+    User:
+      type: object
+      required: [id, username, enabled, roles, createdDate, lastModifiedDate]
+      properties:
+        id: { type: integer, format: int64 }
+        username: { type: string }
+        enabled: { type: boolean }
+        roles: { type: array, items: { $ref: '#/components/schemas/Role' } }
+        createdDate: { type: string, format: date-time }
+        lastModifiedDate: { type: string, format: date-time }
+    CreateUserRequest:
+      type: object
+      required: [username, password, roles]
+      properties:
+        username: { type: string }
+        password: { type: string, format: password }
+        enabled: { type: boolean, default: true }
+        roles: { type: array, items: { type: string } }
+    UpdateUserRequest:
+      type: object
+      required: [username, enabled, roles]
+      properties:
+        username: { type: string }
+        password: { type: string, format: password }
+        enabled: { type: boolean }
+        roles: { type: array, items: { type: string } }
+    CreateRoleRequest:
+      type: object
+      required: [code, label]
+      properties:
+        code: { type: string }
+        label: { type: string }
+    UpdateRoleRequest:
+      type: object
+      required: [label]
+      properties:
+        label: { type: string }
+    LoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username: { type: string }
+        password: { type: string, format: password }
+    LoginResponse:
+      type: object
+      required: [token, tokenType, expiresAt, user]
+      properties:
+        token: { type: string }
+        tokenType: { type: string }
+        expiresAt: { type: string, format: date-time }
+        user: { $ref: '#/components/schemas/User' }
+    ViewMode:
+      type: string
+      enum: [light, dark, system]
+    UserSettings:
+      type: object
+      required: [viewMode]
+      properties:
+        userId: { type: integer, format: int64, nullable: true }
+        roleCode: { type: string, nullable: true }
+        viewMode: { $ref: '#/components/schemas/ViewMode' }
+        createdDate: { type: string, format: date-time, nullable: true }
+        lastModifiedDate: { type: string, format: date-time, nullable: true }
+    UpdateUserSettingsRequest:
+      type: object
+      required: [viewMode]
+      properties:
+        viewMode: { $ref: '#/components/schemas/ViewMode' }
