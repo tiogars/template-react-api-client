@@ -1,38 +1,56 @@
-import { emptySplitApi as api } from './emptyApi';
-export const addTagTypes = ['Nomenclatures'] as const;
+import { emptySplitApi as api } from "./emptyApi";
+export const addTagTypes = ["Nomenclatures"] as const;
 const injectedRtkApi = api
   .enhanceEndpoints({
     addTagTypes,
   })
   .injectEndpoints({
     endpoints: (build) => ({
-      listNomenclature: build.query<ListNomenclatureApiResponse, ListNomenclatureApiArg>({
+      listNomenclature: build.query<
+        ListNomenclatureApiResponse,
+        ListNomenclatureApiArg
+      >({
         query: () => ({ url: `/api/v1/nomenclature` }),
-        providesTags: ['Nomenclatures'],
+        providesTags: ["Nomenclatures"],
       }),
-      createNomenclature: build.mutation<CreateNomenclatureApiResponse, CreateNomenclatureApiArg>({
+      createNomenclature: build.mutation<
+        CreateNomenclatureApiResponse,
+        CreateNomenclatureApiArg
+      >({
         query: (queryArg) => ({
           url: `/api/v1/nomenclature`,
-          method: 'POST',
+          method: "POST",
           body: queryArg.createNomenclatureRequest,
         }),
-        invalidatesTags: ['Nomenclatures'],
+        invalidatesTags: ["Nomenclatures"],
       }),
-      readNomenclature: build.query<ReadNomenclatureApiResponse, ReadNomenclatureApiArg>({
+      readNomenclature: build.query<
+        ReadNomenclatureApiResponse,
+        ReadNomenclatureApiArg
+      >({
         query: (queryArg) => ({ url: `/api/v1/nomenclature/${queryArg.id}` }),
-        providesTags: ['Nomenclatures'],
+        providesTags: ["Nomenclatures"],
       }),
-      updateNomenclature: build.mutation<UpdateNomenclatureApiResponse, UpdateNomenclatureApiArg>({
+      updateNomenclature: build.mutation<
+        UpdateNomenclatureApiResponse,
+        UpdateNomenclatureApiArg
+      >({
         query: (queryArg) => ({
           url: `/api/v1/nomenclature/${queryArg.id}`,
-          method: 'PUT',
+          method: "PUT",
           body: queryArg.updateNomenclatureRequest,
         }),
-        invalidatesTags: ['Nomenclatures'],
+        invalidatesTags: ["Nomenclatures"],
       }),
-      deleteNomenclature: build.mutation<DeleteNomenclatureApiResponse, DeleteNomenclatureApiArg>({
-        query: (queryArg) => ({ url: `/api/v1/nomenclature/${queryArg.id}`, method: 'DELETE' }),
-        invalidatesTags: ['Nomenclatures'],
+      deleteNomenclature: build.mutation<
+        DeleteNomenclatureApiResponse,
+        DeleteNomenclatureApiArg
+      >({
+        query: (queryArg) => ({
+          url: `/api/v1/nomenclature/${queryArg.id}`,
+          method: "DELETE",
+        }),
+        invalidatesTags: ["Nomenclatures"],
       }),
     }),
     overrideExisting: false,
@@ -46,7 +64,8 @@ export type CreateNomenclatureApiResponse =
 export type CreateNomenclatureApiArg = {
   createNomenclatureRequest: CreateNomenclatureRequest;
 };
-export type ReadNomenclatureApiResponse = /** status 200 Nomenclature returned. */ NomenclatureRead;
+export type ReadNomenclatureApiResponse =
+  /** status 200 Nomenclature returned. */ NomenclatureRead;
 export type ReadNomenclatureApiArg = {
   id: number;
 };

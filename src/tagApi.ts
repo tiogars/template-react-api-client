@@ -1,5 +1,5 @@
-import { emptySplitApi as api } from './emptyApi';
-export const addTagTypes = ['Tags'] as const;
+import { emptySplitApi as api } from "./emptyApi";
+export const addTagTypes = ["Tags"] as const;
 const injectedRtkApi = api
   .enhanceEndpoints({
     addTagTypes,
@@ -8,31 +8,34 @@ const injectedRtkApi = api
     endpoints: (build) => ({
       listTag: build.query<ListTagApiResponse, ListTagApiArg>({
         query: () => ({ url: `/api/v1/tag` }),
-        providesTags: ['Tags'],
+        providesTags: ["Tags"],
       }),
       createTag: build.mutation<CreateTagApiResponse, CreateTagApiArg>({
         query: (queryArg) => ({
           url: `/api/v1/tag`,
-          method: 'POST',
+          method: "POST",
           body: queryArg.createTagRequest,
         }),
-        invalidatesTags: ['Tags'],
+        invalidatesTags: ["Tags"],
       }),
       readTag: build.query<ReadTagApiResponse, ReadTagApiArg>({
         query: (queryArg) => ({ url: `/api/v1/tag/${queryArg.id}` }),
-        providesTags: ['Tags'],
+        providesTags: ["Tags"],
       }),
       updateTag: build.mutation<UpdateTagApiResponse, UpdateTagApiArg>({
         query: (queryArg) => ({
           url: `/api/v1/tag/${queryArg.id}`,
-          method: 'PUT',
+          method: "PUT",
           body: queryArg.updateTagRequest,
         }),
-        invalidatesTags: ['Tags'],
+        invalidatesTags: ["Tags"],
       }),
       deleteTag: build.mutation<DeleteTagApiResponse, DeleteTagApiArg>({
-        query: (queryArg) => ({ url: `/api/v1/tag/${queryArg.id}`, method: 'DELETE' }),
-        invalidatesTags: ['Tags'],
+        query: (queryArg) => ({
+          url: `/api/v1/tag/${queryArg.id}`,
+          method: "DELETE",
+        }),
+        invalidatesTags: ["Tags"],
       }),
     }),
     overrideExisting: false,

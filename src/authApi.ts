@@ -1,5 +1,5 @@
-import { emptySplitApi as api } from './emptyApi';
-export const addTagTypes = ['Authentication', 'Users', 'Roles'] as const;
+import { emptySplitApi as api } from "./emptyApi";
+export const addTagTypes = ["Authentication", "Users", "Roles"] as const;
 const injectedRtkApi = api
   .enhanceEndpoints({
     addTagTypes,
@@ -9,42 +9,45 @@ const injectedRtkApi = api
       login: build.mutation<LoginApiResponse, LoginApiArg>({
         query: (queryArg) => ({
           url: `/api/v1/auth/login`,
-          method: 'POST',
+          method: "POST",
           body: queryArg.loginRequest,
         }),
-        invalidatesTags: ['Authentication'],
+        invalidatesTags: ["Authentication"],
       }),
       me: build.query<MeApiResponse, MeApiArg>({
         query: () => ({ url: `/api/v1/auth/me` }),
-        providesTags: ['Authentication'],
+        providesTags: ["Authentication"],
       }),
       listUsers: build.query<ListUsersApiResponse, ListUsersApiArg>({
         query: () => ({ url: `/api/v1/auth/users` }),
-        providesTags: ['Users'],
+        providesTags: ["Users"],
       }),
       createUser: build.mutation<CreateUserApiResponse, CreateUserApiArg>({
         query: (queryArg) => ({
           url: `/api/v1/auth/users`,
-          method: 'POST',
+          method: "POST",
           body: queryArg.createUserRequest,
         }),
-        invalidatesTags: ['Users'],
+        invalidatesTags: ["Users"],
       }),
       readUser: build.query<ReadUserApiResponse, ReadUserApiArg>({
         query: (queryArg) => ({ url: `/api/v1/auth/users/${queryArg.id}` }),
-        providesTags: ['Users'],
+        providesTags: ["Users"],
       }),
       updateUser: build.mutation<UpdateUserApiResponse, UpdateUserApiArg>({
         query: (queryArg) => ({
           url: `/api/v1/auth/users/${queryArg.id}`,
-          method: 'PUT',
+          method: "PUT",
           body: queryArg.updateUserRequest,
         }),
-        invalidatesTags: ['Users'],
+        invalidatesTags: ["Users"],
       }),
       deleteUser: build.mutation<DeleteUserApiResponse, DeleteUserApiArg>({
-        query: (queryArg) => ({ url: `/api/v1/auth/users/${queryArg.id}`, method: 'DELETE' }),
-        invalidatesTags: ['Users'],
+        query: (queryArg) => ({
+          url: `/api/v1/auth/users/${queryArg.id}`,
+          method: "DELETE",
+        }),
+        invalidatesTags: ["Users"],
       }),
       deleteSelectedUsers: build.mutation<
         DeleteSelectedUsersApiResponse,
@@ -52,38 +55,41 @@ const injectedRtkApi = api
       >({
         query: (queryArg) => ({
           url: `/api/v1/auth/users/delete-selected`,
-          method: 'POST',
+          method: "POST",
           body: queryArg.deleteSelectedRequest,
         }),
-        invalidatesTags: ['Users'],
+        invalidatesTags: ["Users"],
       }),
       listRoles: build.query<ListRolesApiResponse, ListRolesApiArg>({
         query: () => ({ url: `/api/v1/auth/roles` }),
-        providesTags: ['Roles'],
+        providesTags: ["Roles"],
       }),
       createRole: build.mutation<CreateRoleApiResponse, CreateRoleApiArg>({
         query: (queryArg) => ({
           url: `/api/v1/auth/roles`,
-          method: 'POST',
+          method: "POST",
           body: queryArg.createRoleRequest,
         }),
-        invalidatesTags: ['Roles'],
+        invalidatesTags: ["Roles"],
       }),
       readRole: build.query<ReadRoleApiResponse, ReadRoleApiArg>({
         query: (queryArg) => ({ url: `/api/v1/auth/roles/${queryArg.id}` }),
-        providesTags: ['Roles'],
+        providesTags: ["Roles"],
       }),
       updateRole: build.mutation<UpdateRoleApiResponse, UpdateRoleApiArg>({
         query: (queryArg) => ({
           url: `/api/v1/auth/roles/${queryArg.id}`,
-          method: 'PUT',
+          method: "PUT",
           body: queryArg.updateRoleRequest,
         }),
-        invalidatesTags: ['Roles'],
+        invalidatesTags: ["Roles"],
       }),
       deleteRole: build.mutation<DeleteRoleApiResponse, DeleteRoleApiArg>({
-        query: (queryArg) => ({ url: `/api/v1/auth/roles/${queryArg.id}`, method: 'DELETE' }),
-        invalidatesTags: ['Roles'],
+        query: (queryArg) => ({
+          url: `/api/v1/auth/roles/${queryArg.id}`,
+          method: "DELETE",
+        }),
+        invalidatesTags: ["Roles"],
       }),
       deleteSelectedRoles: build.mutation<
         DeleteSelectedRolesApiResponse,
@@ -91,10 +97,10 @@ const injectedRtkApi = api
       >({
         query: (queryArg) => ({
           url: `/api/v1/auth/roles/delete-selected`,
-          method: 'POST',
+          method: "POST",
           body: queryArg.deleteSelectedRequest,
         }),
-        invalidatesTags: ['Roles'],
+        invalidatesTags: ["Roles"],
       }),
     }),
     overrideExisting: false,

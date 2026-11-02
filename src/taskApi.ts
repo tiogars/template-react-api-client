@@ -1,5 +1,5 @@
-import { emptySplitApi as api } from './emptyApi';
-export const addTagTypes = ['Tasks'] as const;
+import { emptySplitApi as api } from "./emptyApi";
+export const addTagTypes = ["Tasks"] as const;
 const injectedRtkApi = api
   .enhanceEndpoints({
     addTagTypes,
@@ -8,68 +8,89 @@ const injectedRtkApi = api
     endpoints: (build) => ({
       listTask: build.query<ListTaskApiResponse, ListTaskApiArg>({
         query: () => ({ url: `/api/v1/task` }),
-        providesTags: ['Tasks'],
+        providesTags: ["Tasks"],
       }),
       createTask: build.mutation<CreateTaskApiResponse, CreateTaskApiArg>({
         query: (queryArg) => ({
           url: `/api/v1/task`,
-          method: 'POST',
+          method: "POST",
           body: queryArg.createTaskRequest,
         }),
-        invalidatesTags: ['Tasks'],
+        invalidatesTags: ["Tasks"],
       }),
       readTask: build.query<ReadTaskApiResponse, ReadTaskApiArg>({
         query: (queryArg) => ({ url: `/api/v1/task/${queryArg.id}` }),
-        providesTags: ['Tasks'],
+        providesTags: ["Tasks"],
       }),
       updateTask: build.mutation<UpdateTaskApiResponse, UpdateTaskApiArg>({
         query: (queryArg) => ({
           url: `/api/v1/task/${queryArg.id}`,
-          method: 'PUT',
+          method: "PUT",
           body: queryArg.updateTaskRequest,
         }),
-        invalidatesTags: ['Tasks'],
+        invalidatesTags: ["Tasks"],
       }),
       deleteTask: build.mutation<DeleteTaskApiResponse, DeleteTaskApiArg>({
-        query: (queryArg) => ({ url: `/api/v1/task/${queryArg.id}`, method: 'DELETE' }),
-        invalidatesTags: ['Tasks'],
+        query: (queryArg) => ({
+          url: `/api/v1/task/${queryArg.id}`,
+          method: "DELETE",
+        }),
+        invalidatesTags: ["Tasks"],
       }),
-      deleteSelectedTask: build.mutation<DeleteSelectedTaskApiResponse, DeleteSelectedTaskApiArg>({
+      deleteSelectedTask: build.mutation<
+        DeleteSelectedTaskApiResponse,
+        DeleteSelectedTaskApiArg
+      >({
         query: (queryArg) => ({
           url: `/api/v1/task/delete-selected`,
-          method: 'POST',
+          method: "POST",
           body: queryArg.deleteSelectedRequest,
         }),
-        invalidatesTags: ['Tasks'],
+        invalidatesTags: ["Tasks"],
       }),
       seedTask: build.mutation<SeedTaskApiResponse, SeedTaskApiArg>({
-        query: (queryArg) => ({ url: `/api/v1/task/seed`, method: 'POST', body: queryArg.body }),
-        invalidatesTags: ['Tasks'],
+        query: (queryArg) => ({
+          url: `/api/v1/task/seed`,
+          method: "POST",
+          body: queryArg.body,
+        }),
+        invalidatesTags: ["Tasks"],
       }),
-      importJsonTask: build.mutation<ImportJsonTaskApiResponse, ImportJsonTaskApiArg>({
+      importJsonTask: build.mutation<
+        ImportJsonTaskApiResponse,
+        ImportJsonTaskApiArg
+      >({
         query: (queryArg) => ({
           url: `/api/v1/task/import.json`,
-          method: 'POST',
+          method: "POST",
           body: queryArg.body,
         }),
-        invalidatesTags: ['Tasks'],
+        invalidatesTags: ["Tasks"],
       }),
-      importCsvTask: build.mutation<ImportCsvTaskApiResponse, ImportCsvTaskApiArg>({
+      importCsvTask: build.mutation<
+        ImportCsvTaskApiResponse,
+        ImportCsvTaskApiArg
+      >({
         query: (queryArg) => ({
           url: `/api/v1/task/import.csv`,
-          method: 'POST',
+          method: "POST",
           body: queryArg.body,
         }),
-        invalidatesTags: ['Tasks'],
+        invalidatesTags: ["Tasks"],
       }),
-      exportJsonTask: build.query<ExportJsonTaskApiResponse, ExportJsonTaskApiArg>({
+      exportJsonTask: build.query<
+        ExportJsonTaskApiResponse,
+        ExportJsonTaskApiArg
+      >({
         query: () => ({ url: `/api/v1/task/export.json` }),
-        providesTags: ['Tasks'],
+        providesTags: ["Tasks"],
       }),
-      exportCsvTask: build.query<ExportCsvTaskApiResponse, ExportCsvTaskApiArg>({
-        query: () => ({ url: `/api/v1/task/export.csv` }),
-        providesTags: ['Tasks'],
-      }),
+      exportCsvTask: build.query<ExportCsvTaskApiResponse, ExportCsvTaskApiArg>(
+        {
+          query: () => ({ url: `/api/v1/task/export.csv` }),
+          providesTags: ["Tasks"],
+        },
+      ),
     }),
     overrideExisting: false,
   });
@@ -102,15 +123,18 @@ export type SeedTaskApiResponse = /** status 201 Tasks imported. */ TaskRead[];
 export type SeedTaskApiArg = {
   body: CreateTaskRequest[];
 };
-export type ImportJsonTaskApiResponse = /** status 201 Tasks imported. */ TaskRead[];
+export type ImportJsonTaskApiResponse =
+  /** status 201 Tasks imported. */ TaskRead[];
 export type ImportJsonTaskApiArg = {
   body: CreateTaskRequest[];
 };
-export type ImportCsvTaskApiResponse = /** status 201 Tasks imported. */ TaskRead[];
+export type ImportCsvTaskApiResponse =
+  /** status 201 Tasks imported. */ TaskRead[];
 export type ImportCsvTaskApiArg = {
   body: string;
 };
-export type ExportJsonTaskApiResponse = /** status 200 Tasks exported. */ TaskRead[];
+export type ExportJsonTaskApiResponse =
+  /** status 200 Tasks exported. */ TaskRead[];
 export type ExportJsonTaskApiArg = void;
 export type ExportCsvTaskApiResponse = unknown;
 export type ExportCsvTaskApiArg = void;
@@ -120,8 +144,8 @@ export type BusinessFields = {
   label: string;
   description?: string | null;
 };
-export type TaskStatus = 'TODO' | 'IN_PROGRESS' | 'DONE' | 'CANCELLED';
-export type TaskPriority = 'LOW' | 'NORMAL' | 'HIGH' | 'URGENT';
+export type TaskStatus = "TODO" | "IN_PROGRESS" | "DONE" | "CANCELLED";
+export type TaskPriority = "LOW" | "NORMAL" | "HIGH" | "URGENT";
 export type TaskFields = {
   status?: TaskStatus;
   priority?: TaskPriority;
